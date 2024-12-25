@@ -1,0 +1,40 @@
+{
+    # Enable CORS
+    auto_https off
+}
+
+:80 {
+    # Proxy to the target API
+    reverse_proxy {
+        to {env.TARGET_API_URL}
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+
+    # Handle CORS
+    handle_errors {
+        @404 {
+            not path /api/*
+        }
+        rewrite * /api{uri}
+    }
+
+    handle {
+        # Allow all origins
+        header {
+            Access-Control-Allow-Origin "*"
+            Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+            Access-Control-Allow-Headers "Content-Type, Authorization"
+        }
+
+        # Handle preflight requests
+        @preflight {
+            method OPTIONS
+        }
+        handle @preflight {
+            respond 204
+        }
+    }
+}
