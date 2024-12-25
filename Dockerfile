@@ -1,5 +1,5 @@
 # Use the official Caddy image
-FROM caddy:2
+FROM caddy:latest
 
 # Copy the Caddyfile to the container
 COPY Caddyfile /etc/caddy/Caddyfile
