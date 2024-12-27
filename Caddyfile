@@ -4,13 +4,16 @@
 }
 
 :80 {
-    # Proxy to the target API
-    reverse_proxy {
-        to {env.TARGET_API_URL}
-        header_up Host {host}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
+    # Remove /api/ prefix and proxy to the target API
+    handle_path /api/* {
+        uri strip_prefix /api
+        reverse_proxy {
+            to {env.TARGET_API_URL}
+            header_up Host {host}
+            header_up X-Real-IP {remote}
+            header_up X-Forwarded-For {remote}
+            header_up X-Forwarded-Proto {scheme}
+        }
     }
 
     # Handle CORS
