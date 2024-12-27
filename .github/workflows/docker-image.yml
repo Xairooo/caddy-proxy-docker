@@ -20,16 +20,19 @@ jobs:
       uses: docker/login-action@v1
       with:
         username: ${{ secrets.DOCKERHUB_USER }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}        
+
+    - name: Replace placeholder with target API URL
+      run: |
+          sed -i 's|{TARGET_API_URL}|${{ secrets.TARGET_API_URL }}|g' Caddyfile.template
+          mv Caddyfile.template Caddyfile
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKERHUB_USER }}/caddy-proxy:latest
-        build-args: |
-          TARGET_API_URL=${{ secrets.TARGET_API_URL }}
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USER }}/caddy-proxy:latest
 
   scan-vulnerabilities:
     runs-on: ubuntu-latest

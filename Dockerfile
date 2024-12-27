@@ -8,4 +8,4 @@ COPY Caddyfile /etc/caddy/Caddyfile
 EXPOSE 80
 
 # Run Caddy with the environment variable
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--env", "TARGET_API_URL"]
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
